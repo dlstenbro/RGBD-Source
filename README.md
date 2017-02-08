@@ -8,9 +8,9 @@
 - Shervin
 
 ###Team Name:
-Visioneers
+**_Visioneers_**
 ###Product Name:
-Taraminator
+**_Taraminator_**
 ##Repository Description:
 Visioneers will collabroate on the source code for the project using this repository.
 The project involves using the [Tara Stereo Camera](https://www.e-consystems.com/3D-USB-stereo-camera.asp) to preceive depth.
