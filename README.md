@@ -5,6 +5,7 @@
 - Daniel
 - Justin
 - Mitchell
+- Shervin
 
 ###Team Name:
 Visioneers
