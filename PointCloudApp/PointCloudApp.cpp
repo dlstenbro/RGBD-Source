@@ -57,6 +57,11 @@ int PointCloudApp::Init()
 	return TRUE;
 }
 
+/*
+	Method name: getPC()
+	function: allows to extract the point cloud data into a file with extension "pcd" (point cloud data)
+
+/*/
 void PointCloudApp::getPC()
 {
 	pcl::PointCloud<pcl::PointXYZ> cloud;
@@ -74,8 +79,8 @@ void PointCloudApp::getPC()
     cloud.points[i].z = 1024 * rand () / (RAND_MAX + 1.0f);
   }
 
-  pcl::io::savePCDFileASCII ("test_pcd.pcd", cloud);
-  std::cerr << "Saved " << cloud.points.size () << " data points to test_pcd.pcd." << std::endl;
+  pcl::io::savePCDFileASCII ("camera_pcd.pcd", cloud);
+  std::cerr << "Saved " << cloud.points.size () << " data points to camera_pcd.pcd." << std::endl;
 
   for (size_t i = 0; i < cloud.points.size (); ++i)
     std::cerr << "    " << cloud.points[i].x << " " << cloud.points[i].y << " " << cloud.points[i].z << std::endl;
@@ -121,7 +126,9 @@ int PointCloudApp::CameraStreaming()
 		//Pointcloud display
 		//statusShowPointCloud = ShowPointCloud();
 
+		// instead of showing the point cloud on the 3dViewer, write the points to a file called "camera_pcd.pcd"
 		getPC();
+		
 		//imshow("Disparity Map", gDisparityMap_viz);
 		//imshow("Left Image", LeftFrame) ;
 		//imshow("Right Image", RightFrame);
