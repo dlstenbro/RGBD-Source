@@ -1,8 +1,8 @@
 ## RGBD-Source
 
-## Senior Design Project, Spring 2017
+## Senior Design Project, Spring - Summer 2017
 
-## Team Members:
+## Team Members
 - Biplow
 - Daniel
 - Justin
