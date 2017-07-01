@@ -1,7 +1,7 @@
 /*
 
 	Header file for Server class
-	Allows the creation of server and client objects
+	Allows the creation of server objects and member functions
 
 */
 #ifndef SERVER_H
@@ -21,10 +21,15 @@
 #include <string>
 #include <pthread.h>
 
+/*
+	Class name: Server
+	Function: creates a server using a default port. After a connection is established, then the server will execute a task
+*/
 class Server {
 
-	// variables
+	// public Member variables
 	public:
+		
 	    int pId, portNo, listenFd;
 		socklen_t len; //store size of the address
 		//bool loop = false;
@@ -37,11 +42,12 @@ class Server {
 		// constructor
 		Server();
 		
-		// 
+		// public member functions
 		void startServer(void);	
 		int clientListener(void);
 
 	private:
+		// private member functions
 		int bindSocket(void);
 		int setSocketAttributes(void);
 		void serverTask(void);
