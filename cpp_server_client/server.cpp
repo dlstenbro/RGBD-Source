@@ -1,10 +1,6 @@
-/*
-Server example using cpp taken from http://www.cplusplus.com/forum/unices/116977/
+#include "server.h"
 
-This implementation is only valid on unix environments.
-
-*/
-
+#include <iostream>
 #include <string.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -12,44 +8,29 @@ This implementation is only valid on unix environments.
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <iostream>
 #include <fstream>
 #include <strings.h>
 #include <stdlib.h>
 #include <string>
 #include <pthread.h>
+
+#define PORT_NUMBER 8080
+
 using namespace std;
-
-void *task1(void *);
-
 static int connFd;
 
-int main(int argc, char* argv[])
+Server::Server(void)
 {
-    int pId, portNo, listenFd;
-    socklen_t len; //store size of the address
-    bool loop = false;
-    struct sockaddr_in svrAdd, clntAdd;
-    
-    pthread_t threadA[3];
-    
-    if (argc < 2)
-    {
-        cerr << "Syntam : ./server <port>" << endl;
-        return 0;
-    }
-    
-    portNo = atoi(argv[1]);
-    
-    if((portNo > 65535) || (portNo < 2000))
-    {
-        cerr << "Please enter a port number between 2000 - 65535" << endl;
-        return 0;
-    }
-    
-    //create socket
+	// constructor functions
+	setSocketAttributes();
+	bindSocket();
+}
+
+int Server::setSocketAttributes()
+{
+	cout << "Using port number " + PORT_NUMBER << endl;
 	listenFd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-    
+
     if(listenFd < 0)
     {
         cerr << "Cannot open socket" << endl;
@@ -60,58 +41,65 @@ int main(int argc, char* argv[])
     
     svrAdd.sin_family = AF_INET;
     svrAdd.sin_addr.s_addr = INADDR_ANY;
-    svrAdd.sin_port = htons(portNo);
+    svrAdd.sin_port = htons(PORT_NUMBER);	
+}
+
+int Server::clientListener()
+{
     
-    //bind socket
+    listen(listenFd, 5);
+    
+    len = sizeof(clntAdd);
+    
+	socklen_t len = sizeof(clntAdd);
+	//cout << "Listening" << endl;
+	printf("Listening on port number %d\n", PORT_NUMBER);
+
+	//this is where client connects. svr will hang in this mode until client conn
+	connFd = accept(listenFd, (struct sockaddr *)&clntAdd, &len);
+
+	if (connFd < 0)
+	{
+		cerr << "Cannot accept connection" << endl;
+		return 0;
+	}
+	else
+	{
+		cout << "Connection successful" << endl;
+		serverTask();
+	}
+}
+
+int Server::bindSocket()
+{
     if(bind(listenFd, (struct sockaddr *)&svrAdd, sizeof(svrAdd)) < 0)
     {
         cerr << "Cannot bind" << endl;
         return 0;
     }
     
-    listen(listenFd, 5);
-    
-    len = sizeof(clntAdd);
-    
-    int noThread = 0;
-
-    while (noThread < 3)
-    {
-		socklen_t len = sizeof(clntAdd);
-        cout << "Listening" << endl;
-
-        //this is where client connects. svr will hang in this mode until client conn
-        connFd = accept(listenFd, (struct sockaddr *)&clntAdd, &len);
-
-        if (connFd < 0)
-        {
-            cerr << "Cannot accept connection" << endl;
-            return 0;
-        }
-        else
-        {
-            cout << "Connection successful" << endl;
-        }
-        
-        pthread_create(&threadA[noThread], NULL, task1, NULL); 
-        
-        noThread++;
-    }
-    
-    for(int i = 0; i < 3; i++)
-    {
-        pthread_join(threadA[i], NULL);
-    }
-    
-    
+    return 1;
 }
 
-void *task1 (void *dummyPt)
+void Server::startServer(void)
 {
-    cout << "Thread No: " << pthread_self() << endl;
+	cout << "Starting server...." << endl;
+	clientListener();
+	
+	
+	// LAUNCH POINT CLOUD CODE HERE
+	// PointCloudApp point_cloud;
+}
+
+void Server::serverTask(void)
+{
+
+	cout << "Thread No: " << pthread_self() << endl;
+	
     char test[300];
     bzero(test, 301);
     bool loop = false;
+    
     while(!loop)
     {    
         bzero(test, 301);
@@ -121,11 +109,11 @@ void *task1 (void *dummyPt)
         
         string tester (test);
         cout << tester << endl;
-        
-        
+
         if(tester == "exit")
             break;
     }
-    cout << "\nClosing thread and conn" << endl;
+    cout << "\nClosing thread and connection!" << endl;
     close(connFd);
+    
 }
