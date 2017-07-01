@@ -14,11 +14,15 @@
 #include <string>
 #include <pthread.h>
 
-#define PORT_NUMBER 8080
+#define PORT_NUMBER 8080	// default port. Can easily change port if needed
 
 using namespace std;
 static int connFd;
 
+/*
+	Member Function name: Server
+	Function: Server object Constructor
+*/
 Server::Server(void)
 {
 	// constructor functions
@@ -26,6 +30,10 @@ Server::Server(void)
 	bindSocket();
 }
 
+/*
+	Member Function name: setSocketAttributes
+	Function: takes in the default port number and sets up listener attributes for a given port
+*/
 int Server::setSocketAttributes()
 {
 	cout << "Using port number " + PORT_NUMBER << endl;
@@ -37,6 +45,7 @@ int Server::setSocketAttributes()
         return 0;
     }
     
+    // clear memory using bzero http://fdiv.net/2009/01/14/memset-vs-bzero-ultimate-showdown
     bzero((char*) &svrAdd, sizeof(svrAdd));
     
     svrAdd.sin_family = AF_INET;
@@ -44,6 +53,10 @@ int Server::setSocketAttributes()
     svrAdd.sin_port = htons(PORT_NUMBER);	
 }
 
+/*
+	Member Function name: clientListener
+	Function: Listens for a given connection from a client machine. If the listener fails to start then return 0
+*/
 int Server::clientListener()
 {
     
@@ -70,6 +83,10 @@ int Server::clientListener()
 	}
 }
 
+/*
+	Member Function name: bindSocket
+	Function: bind memory address at the socket address 
+*/
 int Server::bindSocket()
 {
     if(bind(listenFd, (struct sockaddr *)&svrAdd, sizeof(svrAdd)) < 0)
@@ -81,6 +98,12 @@ int Server::bindSocket()
     return 1;
 }
 
+/*	
+	Member Function name: startServer
+	Function: start server then listen for incoming connections.
+	point cloud application can start here.
+		
+*/
 void Server::startServer(void)
 {
 	cout << "Starting server...." << endl;
@@ -91,6 +114,16 @@ void Server::startServer(void)
 	// PointCloudApp point_cloud;
 }
 
+/*	
+	Member Function name: serverTask
+	Function: Server task after the connection is established
+	
+	1. once the connection is established and the point cloud application is started stream point cloud data
+	2. create a buffer of the current pcd file, and stream the data in bytes through the pipe to client machine
+	3. on client machine implement checksum to ensure the data is not corrupt?
+		- if data is corrupt then send a message back to server  to resend packet.
+		
+*/
 void Server::serverTask(void)
 {
 
