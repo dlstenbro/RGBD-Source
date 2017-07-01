@@ -23,6 +23,8 @@
 #include "pcl/io/pcd_io.h"
 #include "pcl/point_types.h"
 
+#include "cpp_server_client/server.h" // reference to the server header file
+
 using namespace Tara;
 using namespace pcl;
 
