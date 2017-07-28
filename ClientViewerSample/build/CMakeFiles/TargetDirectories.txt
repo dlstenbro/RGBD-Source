@@ -1,0 +1,3 @@
+/home/daniel/Desktop/SeniorDesign/build/CMakeFiles/edit_cache.dir
+/home/daniel/Desktop/SeniorDesign/build/CMakeFiles/rebuild_cache.dir
+/home/daniel/Desktop/SeniorDesign/build/CMakeFiles/client_viewer.dir
